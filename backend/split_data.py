@@ -39,7 +39,7 @@ def split_data(target_col: str, df: pd.DataFrame, cfg_split: dict, custom_col=No
             shuffle=params.get("shuffle", True),
             random_state=params.get("random_state", 42)
         )
-        # возвращаем список индексов, для согласованности лучше оставить как есть
+        # return indexes array (list)
         return list(kf.split(df))
 
     elif method == "custom":

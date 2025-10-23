@@ -10,11 +10,24 @@ from sklearn.ensemble import (
 from sklearn.linear_model import LogisticRegression
 from xgboost import XGBClassifier
 from sklearn.metrics import f1_score, roc_auc_score, accuracy_score
-from sklearn.model_selection import train_test_split
-import pandas as pd
 from catboost import CatBoostClassifier
+from data_explorer import apply_data
+from split_yaml import load_config
+from split_data import split_data
+import logging
+import os
 
 
+
+log_dir = os.path.join(os.path.dirname(__file__), "logs")
+os.makedirs(log_dir, exist_ok=True)
+
+# Настройка логирования
+logging.basicConfig(
+    filename=os.path.join(log_dir, "train_ensemble.log"),
+    level=logging.INFO,
+    format="%(asctime)s [%(levelname)s] %(message)s",
+)
 
 def load_model_from_cfg(model_type, params):
     if model_type == "RandomForestClassifier":
@@ -53,42 +66,48 @@ def build_ensemble(cfg, estimators):
     else:
         raise ValueError(f"Unsupported ensemble_type: {ensemble_type}")
 
-def train_ensemble_model(X, y, cfg_path="models/model_config.yaml"):
-    with open(cfg_path) as f:
-        cfg = yaml.safe_load(f)
+def train_ensemble_model(type_data: str, type_class: str, split_type: str="base"):
+    cfg_path = f"models/model_config_{type_class}.yaml"
+    try:
+        with open(cfg_path) as f:
+            cfg = yaml.safe_load(f)
 
-    X_train, X_test, y_train, y_test = train_test_split(
-        X, y, test_size=0.2, random_state=42
-    )
+        df, y, num_features, cat_features = apply_data(type_data=type_data)
+        csg_split = load_config.load_split_config(split_type=split_type)
+        X_train, X_test, y_train, y_test = split_data(target_col=y, df=df, cfg_split=csg_split)
 
-    estimators = []
-    for est in cfg["estimators"]:
-        model = load_model_from_cfg(est["type"], est["params"])
-        estimators.append((est["name"], model))
-
-    ensemble = build_ensemble(cfg, estimators)
-
-    with mlflow.start_run():
-        ensemble.fit(X_train, y_train)
-        y_pred = ensemble.predict(X_test)
-
-        y_prob = getattr(ensemble, "predict_proba", lambda X: None)(X_test)
-        y_prob = y_prob[:, 1] if y_prob is not None else None
-
-        acc = accuracy_score(y_test, y_pred)
-        f1 = f1_score(y_test, y_pred)
-        auc = roc_auc_score(y_test, y_prob) if y_prob is not None else None
-
-        mlflow.log_param("model_name", cfg["model_name"])
-        mlflow.log_param("ensemble_type", cfg["ensemble_type"])
+        estimators = []
         for est in cfg["estimators"]:
-            mlflow.log_params({f"{est['name']}_{k}": v for k, v in est["params"].items()})
+            model = load_model_from_cfg(est["type"], est["params"])
+            estimators.append((est["name"], model))
 
-        mlflow.log_metric("accuracy", acc)
-        mlflow.log_metric("f1", f1)
-        if auc:
-            mlflow.log_metric("roc_auc", auc)
+        ensemble = build_ensemble(cfg, estimators)
 
-        mlflow.sklearn.log_model(ensemble, cfg["model_name"])
+        with mlflow.start_run():
+            ensemble.fit(X_train, y_train)
+            y_pred = ensemble.predict(X_test)
 
-    return ensemble
+            y_prob = getattr(ensemble, "predict_proba", lambda X: None)(X_test)
+            y_prob = y_prob[:, 1] if y_prob is not None else None
+
+            acc = accuracy_score(y_test, y_pred)
+            f1 = f1_score(y_test, y_pred)
+            auc = roc_auc_score(y_test, y_prob) if y_prob is not None else None
+
+            mlflow.log_param("model_name", cfg["model_name"])
+            mlflow.log_param("ensemble_type", cfg["ensemble_type"])
+            for est in cfg["estimators"]:
+                mlflow.log_params({f"{est['name']}_{k}": v for k, v in est["params"].items()})
+
+            mlflow.log_metric("accuracy", acc)
+            mlflow.log_metric("f1", f1)
+            if auc:
+                mlflow.log_metric("roc_auc", auc)
+
+            mlflow.sklearn.log_model(ensemble, cfg["model_name"])
+
+        return ensemble
+
+    except Exception as e:
+        logging.exception(f"Ошибка во время обучения: {e}")
+        raise
