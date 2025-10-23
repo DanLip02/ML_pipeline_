@@ -1,0 +1,23 @@
+data:
+  path: "data/data_test.xlsx"     # путь к Excel-файлу
+  sheet_name: "main"                 # лист (если None — берётся первый)
+  target: "bosk"             # целевая переменная (если есть)
+  dropna: True                       # удалить строки с пропусками
+
+features:
+  numerical:
+    - employees_count
+    - annual_revenue
+    - assets_value
+    - liabilities
+    - market_share
+    - avg_salary
+    - export_share
+    - operational_margin
+
+  categorical:
+    - industry
+    - region
+    - ownership_type
+    - org_size
+    - years_on_market_category

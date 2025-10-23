@@ -1,0 +1,37 @@
+split:
+  # active split
+  active: "custom"
+
+  # actual methods (can be added more)
+  methods:
+
+    # 1️⃣ basic train_test_split
+    basic:
+      type: "basic"
+      params:
+        test_size: 0.2
+        random_state: 42
+        stratify: false
+
+    # 2️⃣ Timesplit (put date_column there)
+    time:
+      type: "time"
+      params:
+        date_column: "rating_date"
+        split_date: "2023-01-01"
+
+    # 3️⃣ KFold split
+    kfold:
+      type: "kfold"
+      params:
+        n_splits: 5
+        shuffle: true
+        random_state: 42
+
+    # 4️⃣ custom split (based on id_ccl, for ex. global_id_ogrn - based on data filter)
+    custom:
+      type: "custom"
+      params:
+        id_column: "ogrn"
+        test_size: 0.2
+        random_state: 42
