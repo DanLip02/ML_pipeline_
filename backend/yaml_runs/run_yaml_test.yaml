@@ -1,0 +1,4 @@
+run:
+  type_data: "test"
+  type_class: "voting"
+  split_type: "base"
