@@ -1,0 +1,14 @@
+artifact_uri: file:///Users/danilalipatov/PycharmProjects%20/ML_pipeline/backend/mlruns/0/6d7fb3fd20964b5abe2d6bad97f9071b/artifacts
+end_time: 1761340095874
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: 6d7fb3fd20964b5abe2d6bad97f9071b
+run_name: bedecked-bird-329
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1761340082456
+status: 3
+tags: []
+user_id: danilalipatov

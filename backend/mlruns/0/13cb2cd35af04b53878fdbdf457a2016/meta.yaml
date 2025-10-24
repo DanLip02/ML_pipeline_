@@ -1,0 +1,14 @@
+artifact_uri: file:///Users/danilalipatov/PycharmProjects%20/ML_pipeline/backend/mlruns/0/13cb2cd35af04b53878fdbdf457a2016/artifacts
+end_time: 1761339877532
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: 13cb2cd35af04b53878fdbdf457a2016
+run_name: worried-finch-952
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1761339866248
+status: 3
+tags: []
+user_id: danilalipatov

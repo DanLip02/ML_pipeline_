@@ -20,4 +20,4 @@ def load_split_config(split_type: str, base_dir: str = "split_yaml"):
     with open(split_path, "r", encoding="utf-8") as f:
         cfg = yaml.safe_load(f)
 
-    return cfg["split"]
+    return cfg[split_type]

@@ -1,5 +1,4 @@
 time:
-  type: "time"
   params:
     date_column: "rating_date"
     split_date: "2023-01-01"
