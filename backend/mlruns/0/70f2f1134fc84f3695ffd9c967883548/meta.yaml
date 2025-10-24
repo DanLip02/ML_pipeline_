@@ -1,0 +1,14 @@
+artifact_uri: file:///Users/danilalipatov/PycharmProjects%20/ML_pipeline/backend/mlruns/0/70f2f1134fc84f3695ffd9c967883548/artifacts
+end_time: 1761339538646
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: 70f2f1134fc84f3695ffd9c967883548
+run_name: nimble-hog-522
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1761339533828
+status: 4
+tags: []
+user_id: danilalipatov

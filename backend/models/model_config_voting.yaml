@@ -5,7 +5,7 @@ ensemble:
   type: voting          # possible right now: voting | stacking | bagging
   voting: soft          # for VotingClassifier
   final_estimator: null # for StackingClassifier, example LogisticRegression
-  base_estimators:
+  estimators:
     - name: rf
       type: RandomForestClassifier
       params:

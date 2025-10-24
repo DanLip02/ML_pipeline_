@@ -1,5 +1,4 @@
 custom:
-  type: "custom"
   params:
     id_column: "ogrn"
     test_size: 0.2

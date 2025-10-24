@@ -14,7 +14,8 @@ def load_data(cfg: dict):
     data_cfg = cfg["data"]
     df = pd.read_excel(
         data_cfg["path"],
-        sheet_name=data_cfg.get("sheet_name", None)
+        sheet_name=data_cfg.get("sheet_name", None),
+        skiprows=data_cfg.get("skiprows", None)
     )
 
     if data_cfg.get("dropna", False):
@@ -22,16 +23,55 @@ def load_data(cfg: dict):
 
     return df
 
+def clean_target(df: pd.DataFrame, target_col: str, maps_num: dict) -> pd.DataFrame:
+    if target_col not in df.columns:
+        raise ValueError(f"Целевая переменная '{target_col}' не найдена")
+
+    before = len(df)
+    df = df.dropna(subset=[target_col])
+    if len(df) < before:
+        print(f"⚠️ Удалено {before - len(df)} строк с NaN в '{target_col}'")
+
+    df[target_col] = df[target_col].astype(str).str.strip().str.lower()
+    df["target_num"] = df[target_col].map(maps_num)
+
+    unknown_mask = df["target_num"].isna()
+    if unknown_mask.any():
+        print(f"⚠️ Неизвестные рейтинги: {df.loc[unknown_mask, target_col].unique()}")
+        df = df.loc[~unknown_mask]
+
+    return df
 
 def prepare_features(df: pd.DataFrame, cfg: dict):
+    maps_num = {'aaa': 0, 'aa+': 1,
+                'aa': 1, 'aa-': 1,
+                'a+': 2, 'a': 2, 'a-': 2,
+                'bbb+': 3, 'bbb': 3, 'bbb-': 3,
+                'bb+': 4, 'bb': 4, 'bb-': 4,
+                'b+': 5, 'b': 5, 'b-': 5,
+                'ccc': 6}
+
     features_cfg = cfg["features"]
 
-    num_features = features_cfg.get("numerical", [])
+    num_features = features_cfg.get("numeric", [])
     cat_features = features_cfg.get("categorical", [])
     target_col = cfg["data"].get("target")
 
+    df = df[df["skip_качество данных"] == 0]
+    df['report_date'] = pd.to_datetime(df['report_date'])
+    df = df.sort_values(['global_id_ogrn', 'report_date'])
+    df = clean_target(df, target_col, maps_num)
+
     X = df[num_features + cat_features].copy()
-    y = df[target_col] if target_col in df.columns else None
+    y = df[target_col].map(maps_num) if target_col in df.columns else None
+
+    for col in num_features:
+        X[col] = X[col].fillna(0)
+
+    for col in cat_features:
+        X[col] = X[col].fillna("missing").astype(str)
+
+    X = X.reset_index(drop=True).values
 
     return X, y, num_features, cat_features
 
@@ -56,11 +96,6 @@ def apply_data(type_data: str):
 
     X, y, num_features, cat_features = prepare_features(df, cfg_data)
 
-    for col in num_features:
-        X[col] = X[col].fillna(0)
-
-    for col in cat_features:
-        X[col] = X[col].fillna("missing").astype(str)
 
     print(f"📊 Numerical features: {num_features}")
     print(f"🏷️ Categorical features: {cat_features}")
@@ -70,7 +105,7 @@ def apply_data(type_data: str):
     # X_train, X_test, y_train, y_test = split_data(X, y, cfg_split["split"])
     # print(f"🔹 Train: {X_train.shape}, Test: {X_test.shape}")
 
-    return df, y, num_features, cat_features
+    return X, y, num_features, cat_features
 
 if __name__ == "__main__":
     apply_data()
