@@ -1,0 +1,14 @@
+artifact_uri: /Users/danilalipatov/PycharmProjects/ML_pipeline/backend/mlruns/0/b4be19c8e1d148f7ba718319a7414981/artifacts
+end_time: 1761553942131
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: b4be19c8e1d148f7ba718319a7414981
+run_name: popular-lamb-814
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1761553931859
+status: 3
+tags: []
+user_id: danilalipatov

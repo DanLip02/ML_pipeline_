@@ -1,0 +1,14 @@
+artifact_uri: /Users/danilalipatov/PycharmProjects/ML_pipeline/backend/mlruns/0/f085fbe9a11343abafb96abd8d18d60e/artifacts
+end_time: 1761379396459
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: f085fbe9a11343abafb96abd8d18d60e
+run_name: capable-eel-92
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1761379385588
+status: 3
+tags: []
+user_id: danilalipatov

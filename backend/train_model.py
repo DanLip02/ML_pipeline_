@@ -8,7 +8,7 @@ from sklearn.ensemble import (
     BaggingClassifier,
     RandomForestClassifier
 )
-from sklearn.linear_model import LogisticRegression
+from sklearn.linear_model import LogisticRegression, LinearRegression
 from xgboost import XGBClassifier
 from sklearn.metrics import f1_score, roc_auc_score, accuracy_score
 from sklearn.pipeline import Pipeline
@@ -23,15 +23,18 @@ from sklearn.preprocessing import StandardScaler, OneHotEncoder
 from sklearn.impute import SimpleImputer
 import pandas as pd
 
-log_dir = os.path.join(os.path.dirname(__file__), "logs")
-os.makedirs(log_dir, exist_ok=True)
+# log_dir = os.path.join(os.path.dirname(__file__), "logs")
+# os.makedirs(log_dir, exist_ok=True)
+#
+# # Настройка логирования
+# logging.basicConfig(
+#     filename=os.path.join(log_dir, "train_ensemble.log"),
+#     level=logging.INFO,
+#     format="%(asctime)s [%(levelname)s] %(message)s",
+# )
 
-# Настройка логирования
-logging.basicConfig(
-    filename=os.path.join(log_dir, "train_ensemble.log"),
-    level=logging.INFO,
-    format="%(asctime)s [%(levelname)s] %(message)s",
-)
+# mlflow.set_tracking_uri("mlruns")
+# mlflow.set_experiment(experimentid="638829837754871989")
 
 def load_model_from_cfg(model_type, params):
     if model_type == "RandomForestClassifier":
@@ -42,6 +45,8 @@ def load_model_from_cfg(model_type, params):
         return XGBClassifier(**params)
     elif model_type == "CatBoostClassifier":
         return CatBoostClassifier(**params)
+    elif model_type == "LinearRegression":
+        return LinearRegression(**params)
     else:
         raise ValueError(f"Unknown model type: {model_type}")
 
@@ -66,17 +71,26 @@ def build_ensemble(cfg, estimators):
             n_estimators=cfg.get("n_estimators", 10),
             random_state=42
         )
-
+    elif ensemble_type == 'base':
+        base_model = load_model_from_cfg(
+            cfg["base_estimator"]["type"],
+            cfg["base_estimator"]["params"]
+        )
+        return base_model
     else:
         raise ValueError(f"Unsupported ensemble_type: {ensemble_type}")
 
-def train_ensemble_model(type_data: str, type_class: str, split_type: str="base"):
+def train_ensemble_model(type_data: str, type_class: str, split_type: str="base", data: dict=None, model: dict=None):
     cfg_path = f"models/model_config_{type_class}.yaml"
     try:
         with open(cfg_path) as f:
             cfg = yaml.safe_load(f)
 
-        X, y, num_features, cat_features = apply_data(type_data=type_data)
+        if model:
+            logging.info("Getting model from user config.")
+            cfg = model
+
+        X, y, num_features, cat_features = apply_data(type_data=type_data, data=data) if data is not None else apply_data(type_data=type_data)
         csg_split = load_config.load_split_config(split_type=split_type)
         X_train, X_test, y_train, y_test = split_data(target_col=y, df=X, cfg_split=csg_split, method=split_type)
 
@@ -120,6 +134,10 @@ def train_ensemble_model(type_data: str, type_class: str, split_type: str="base"
         config_model = cfg["ensemble"]
 
         with mlflow.start_run():
+            # mlflow.set_experiment(experimentid="0")
+            mlflow.autolog()
+            # mlflow.set_experiment(cfg["model_name"])
+
             model_pipeline.fit(X_train, y_train)
             y_pred = model_pipeline.predict(X_test)
 
@@ -132,24 +150,30 @@ def train_ensemble_model(type_data: str, type_class: str, split_type: str="base"
 
             mlflow.log_param("model_name", cfg["model_name"])
             mlflow.log_param("ensemble_type", config_model["type"])
+            input_example = X_train
+            signature = infer_signature(X_train, y_train)
+
+            model_info = mlflow.sklearn.log_model(model_pipeline,
+                                     name=cfg["model_name"],
+                                     input_example=input_example,
+                                     signature=signature
+                                     )
+            logged_model = mlflow.get_logged_model(model_info.model_id)
+
             for est in config_model["estimators"]:
-                mlflow.log_params({f"{est['name']}_{k}": v for k, v in est["params"].items()})
+                mlflow.log_params({f"{est['name']}_{k}": v for k, v in est["params"].items()},)
+            print(logged_model.model_id, logged_model.params)
 
             mlflow.log_metric("accuracy", acc)
             mlflow.log_metric("f1", f1)
             if auc:
                 mlflow.log_metric("roc_auc", auc)
 
-            input_example = X_train.head(1)
-            signature = infer_signature(X_train, y_train)
+        logged_model = mlflow.get_logged_model(model_info.model_id)
+        print(logged_model.model_id, logged_model.metrics)
 
-            mlflow.sklearn.log_model(model_pipeline,
-                                     name=cfg["model_name"],
-                                     input_example=input_example,
-                                     signature=signature)
-
-        return model_pipeline
+        # return logged_model
 
     except Exception as e:
-        logging.exception(f"Ошибка во время обучения: {e}")
+        logging.exception(f"Error: {e}")
         raise

@@ -1,0 +1,14 @@
+artifact_uri: /Users/danilalipatov/PycharmProjects/ML_pipeline/backend/mlruns/0/7da4d6c2cac240d6be3a313d7f4e1143/artifacts
+end_time: 1761344266429
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: 7da4d6c2cac240d6be3a313d7f4e1143
+run_name: kindly-grub-763
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1761344244690
+status: 3
+tags: []
+user_id: danilalipatov

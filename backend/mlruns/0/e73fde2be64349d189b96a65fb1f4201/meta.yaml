@@ -1,0 +1,14 @@
+artifact_uri: /Users/danilalipatov/PycharmProjects/ML_pipeline/backend/mlruns/0/e73fde2be64349d189b96a65fb1f4201/artifacts
+end_time: 1761556065130
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: e73fde2be64349d189b96a65fb1f4201
+run_name: melodic-shoat-215
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1761556054114
+status: 3
+tags: []
+user_id: danilalipatov

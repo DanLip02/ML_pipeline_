@@ -1,4 +1,4 @@
-model_name: credit_risk_ensemble
+model_name: credit_risk_test_2
 framework: sklearn
 
 ensemble:
