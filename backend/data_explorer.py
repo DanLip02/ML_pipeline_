@@ -43,6 +43,7 @@ def clean_target(df: pd.DataFrame, target_col: str, maps_num: dict) -> pd.DataFr
     return df
 
 def prepare_features(df: pd.DataFrame, cfg: dict):
+    #todo get from validation api
     maps_num = {'aaa': 0, 'aa+': 1,
                 'aa': 1, 'aa-': 1,
                 'a+': 2, 'a': 2, 'a-': 2,
@@ -87,8 +88,11 @@ def prepare_features(df: pd.DataFrame, cfg: dict):
 #     return train_test_split(X, y, test_size=test_size, random_state=random_state, stratify=stratify)
 
 
-def apply_data(type_data: str):
+def apply_data(type_data: str, data: dict=None):
     cfg_data = load_config(f"data_yaml/data_{type_data}.yaml")
+
+    if data:
+        cfg_data = data
     # cfg_split = load_config("configs/train_split.yaml")
 
     df = load_data(cfg_data)
@@ -107,5 +111,5 @@ def apply_data(type_data: str):
 
     return X, y, num_features, cat_features
 
-if __name__ == "__main__":
-    apply_data()
+# if __name__ == "__main__":
+#     apply_data()

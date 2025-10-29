@@ -2,3 +2,44 @@ run:
   type_data: "test"
   type_class: "voting"
   split_type: "base"
+
+full_data:
+  data:
+    path: "test"     # путь к Excel-файлу
+    sheet_name: "Ratings"                 # лист (если None — берётся первый)
+    target: "target"             # целевая переменная (если есть)
+    skiprows: 7
+    dropna: False                       # удалить строки с пропусками
+
+  features:
+    numeric:
+
+
+    categorical:
+
+
+
+model:
+  model_name: credit_risk_test_3_model_user_config
+  framework: sklearn
+  ensemble:
+    type: voting          # possible right now: voting | stacking | bagging
+    voting: soft          # for VotingClassifier
+    final_estimator: null # for StackingClassifier, example LogisticRegression
+    estimators:
+      - name: rf
+        type: RandomForestClassifier
+        params:
+          n_estimators: 200
+          max_depth: 5
+      - name: lr
+        type: LogisticRegression
+        params:
+          C: 1.0
+          solver: liblinear
+      - name: xgb
+        type: XGBClassifier
+        params:
+          n_estimators: 300
+          learning_rate: 0.05
+          max_depth: 4

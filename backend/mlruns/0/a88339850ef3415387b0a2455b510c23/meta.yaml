@@ -1,0 +1,14 @@
+artifact_uri: /Users/danilalipatov/PycharmProjects/ML_pipeline/backend/mlruns/0/a88339850ef3415387b0a2455b510c23/artifacts
+end_time: 1761565746524
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: a88339850ef3415387b0a2455b510c23
+run_name: adorable-pig-999
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1761565725611
+status: 3
+tags: []
+user_id: danilalipatov

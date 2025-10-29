@@ -1,0 +1,14 @@
+artifact_uri: /Users/danilalipatov/PycharmProjects/ML_pipeline/backend/mlruns/0/e63919931f8145fdbe260076d3077061/artifacts
+end_time: 1761379133837
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: e63919931f8145fdbe260076d3077061
+run_name: judicious-squid-214
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1761379122895
+status: 3
+tags: []
+user_id: danilalipatov

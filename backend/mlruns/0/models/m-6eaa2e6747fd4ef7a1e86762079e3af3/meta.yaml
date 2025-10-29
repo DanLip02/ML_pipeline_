@@ -1,0 +1,10 @@
+artifact_location: /Users/danilalipatov/PycharmProjects/ML_pipeline/backend/mlruns/0/models/m-6eaa2e6747fd4ef7a1e86762079e3af3/artifacts
+creation_timestamp: 1761556058155
+experiment_id: '0'
+last_updated_timestamp: 1761556065092
+model_id: m-6eaa2e6747fd4ef7a1e86762079e3af3
+model_type: null
+name: credit_risk_test_2
+source_run_id: e73fde2be64349d189b96a65fb1f4201
+status: 2
+status_message: null

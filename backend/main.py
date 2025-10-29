@@ -9,4 +9,11 @@ if __name__ == "__main__":
     TYPE_DATA = run_cfg["run"]["type_data"]
     SPLIT_TYPE = run_cfg["run"]["split_type"]
     TYPE_CLASS = run_cfg["run"]["type_class"]
-    train_ensemble_model(type_data=TYPE_DATA, type_class=TYPE_CLASS, split_type=SPLIT_TYPE)
+
+    full_data_cfg = run_cfg.get("full_data", None)
+    model_cfg = run_cfg.get("model", None)
+
+    if full_data_cfg is not None and model_cfg is not None:
+        train_ensemble_model(type_data=TYPE_DATA, type_class=TYPE_CLASS, split_type=SPLIT_TYPE, data=full_data_cfg, model=model_cfg)
+    else:
+        train_ensemble_model(type_data=TYPE_DATA, type_class=TYPE_CLASS, split_type=SPLIT_TYPE)

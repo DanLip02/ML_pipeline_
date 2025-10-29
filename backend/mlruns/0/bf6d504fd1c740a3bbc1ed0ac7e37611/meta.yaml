@@ -1,0 +1,14 @@
+artifact_uri: /Users/danilalipatov/PycharmProjects/ML_pipeline/backend/mlruns/0/bf6d504fd1c740a3bbc1ed0ac7e37611/artifacts
+end_time: 1761553881756
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: bf6d504fd1c740a3bbc1ed0ac7e37611
+run_name: stately-lamb-278
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1761553869918
+status: 3
+tags: []
+user_id: danilalipatov
