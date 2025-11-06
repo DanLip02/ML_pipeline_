@@ -28,7 +28,7 @@ def compute_ar_metric(y_true, y_pred, skip=None,
     }
 
     response = requests.post(
-        "https://validation_backend.docker03.ratings.ru/ar/",
+        "",
         headers={"accept": "application/json", "Content-Type": "application/json"},
         data=json.dumps(payload),
         verify=False #todo add cert for this https
