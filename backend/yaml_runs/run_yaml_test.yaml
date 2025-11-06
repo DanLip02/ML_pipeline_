@@ -1,15 +1,59 @@
 run:
-  type_data: "test"
-  type_class: "voting"
-  split_type: "base"
+  type_data: test
+  type_class: base
+  split_type: base
+  type_class_model: classification
 
 full_data:
   data:
-    path: "test"     # путь к Excel-файлу
+    path: ""     # путь к Excel-файлу
     sheet_name: "Ratings"                 # лист (если None — берётся первый)
     target: "target"             # целевая переменная (если есть)
     skiprows: 7
     dropna: False                       # удалить строки с пропусками
+    skip: "skip"
+    date_column: "report_date"
+    filter_columns:
+      - "report_date"
+      - "global_id"
+
+#    mapper:
+#        aaa: 0
+#        aa+: 1
+#        aa: 1
+#        aa-: 1
+#        a+: 2
+#        a: 2
+#        a-: 2
+#        bbb+: 3
+#        bbb: 3
+#        bbb-: 3
+#        bb+: 4
+#        bb: 4
+#        bb-: 4
+#        b+: 5
+#        b: 5
+#        b-: 5
+#        ccc: 6
+    mapper:
+          aaa: aaa
+          aa+: aa
+          aa: aa
+          aa-: aa
+          a+: a
+          a: a
+          a-: a
+          bbb+: bbb
+          bbb: bbb
+          bbb-: bbb
+          bb+: bb
+          bb: bb
+          bb-: bb
+          b+: b
+          b: b
+          b-: b
+          ccc: ccc
+
 
   features:
     numeric:
@@ -18,12 +62,11 @@ full_data:
     categorical:
 
 
-
 model:
-  model_name: credit_risk_test_3_model_user_config
+  model_name: credit_risk_test_4_base
   framework: sklearn
   ensemble:
-    type: voting          # possible right now: voting | stacking | bagging
+    type: base         # possible right now: voting | stacking | bagging | bases
     voting: soft          # for VotingClassifier
     final_estimator: null # for StackingClassifier, example LogisticRegression
     estimators:
@@ -32,14 +75,19 @@ model:
         params:
           n_estimators: 200
           max_depth: 5
-      - name: lr
-        type: LogisticRegression
-        params:
-          C: 1.0
-          solver: liblinear
-      - name: xgb
-        type: XGBClassifier
-        params:
-          n_estimators: 300
-          learning_rate: 0.05
-          max_depth: 4
+
+metrics:
+    custom:
+          ar:
+            use_transform: direct
+            min_benchmark: 1
+            max_benchmark: 7
+
+          psi:
+    base:
+      - auc
+      - f1
+      - accuracy
+      - mse
+      - rmse
+      - r2
