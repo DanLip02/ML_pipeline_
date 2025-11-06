@@ -1,13 +1,17 @@
 data:
-  path: "test"     # путь к Excel-файлу
+  path: ""     # путь к Excel-файлу
   sheet_name: "Ratings"                 # лист (если None — берётся первый)
   target: "target"             # целевая переменная (если есть)
   skiprows: 7
   dropna: False                       # удалить строки с пропусками
-
+  skip: "skip_"
+  date_column: "report_date"
+  filter_columns:
+    - "report_date"
+    - "global_id"
+    -
 features:
   numeric:
 
 
   categorical:
-

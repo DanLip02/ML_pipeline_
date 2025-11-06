@@ -33,8 +33,8 @@ def clean_target(df: pd.DataFrame, target_col: str, maps_num: dict) -> pd.DataFr
         print(f"⚠️ Удалено {before - len(df)} строк с NaN в '{target_col}'")
 
     df[target_col] = df[target_col].astype(str).str.strip().str.lower()
-    df["target_num"] = df[target_col].map(maps_num)
-
+    df["target_num"] = df[target_col].map(maps_num) if target_col in df.columns and maps_num is not None else df[target_col]
+    # df["target_num"] = df[target_col]
     unknown_mask = df["target_num"].isna()
     if unknown_mask.any():
         print(f"⚠️ Неизвестные рейтинги: {df.loc[unknown_mask, target_col].unique()}")
@@ -44,27 +44,27 @@ def clean_target(df: pd.DataFrame, target_col: str, maps_num: dict) -> pd.DataFr
 
 def prepare_features(df: pd.DataFrame, cfg: dict):
     #todo get from validation api
-    maps_num = {'aaa': 0, 'aa+': 1,
-                'aa': 1, 'aa-': 1,
-                'a+': 2, 'a': 2, 'a-': 2,
-                'bbb+': 3, 'bbb': 3, 'bbb-': 3,
-                'bb+': 4, 'bb': 4, 'bb-': 4,
-                'b+': 5, 'b': 5, 'b-': 5,
-                'ccc': 6}
 
     features_cfg = cfg["features"]
 
     num_features = features_cfg.get("numeric", [])
     cat_features = features_cfg.get("categorical", [])
     target_col = cfg["data"].get("target")
+    maps_num = cfg["data"].get("mapper", None)
+    skip = cfg["data"].get("skip", None)
+    date_col = cfg["data"].get("date_column", None)
+    filter_col = cfg["data"].get("filter_columns", [])
+    df = df[df[skip] == 0] if skip is not None else df
+    if date_col is not None:
+        df[date_col] = pd.to_datetime(df[date_col])
 
-    df = df[df["skip_качество данных"] == 0]
-    df['report_date'] = pd.to_datetime(df['report_date'])
-    df = df.sort_values(['global_id_ogrn', 'report_date'])
+    df = df.sort_values(filter_col)
     df = clean_target(df, target_col, maps_num)
 
     X = df[num_features + cat_features].copy()
-    y = df[target_col].map(maps_num) if target_col in df.columns else None
+    y = df[target_col].map(maps_num) if target_col in df.columns and maps_num is not None else df[target_col]
+    #todo add check for nums (linear mapping)
+    # y = df[target_col] if target_col in df.columns else None
 
     for col in num_features:
         X[col] = X[col].fillna(0)

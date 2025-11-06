@@ -1,6 +1,5 @@
 import pandas as pd
-from sklearn.model_selection import train_test_split, KFold
-
+# from sklearn.model_selection import train_test_split, KFold
 from sklearn.model_selection import train_test_split, KFold
 import pandas as pd
 
@@ -32,7 +31,7 @@ def split_data(target_col: pd.Series,
     # if not isinstance(target_col, (pd.Series, pd.DataFrame)):
     #     raise TypeError("❌ Аргумент target_col должен быть pandas.Series или DataFrame")
     if len(df) != len(target_col):
-        raise ValueError(f"❌ Размерности X ({len(df)}) и y ({len(target_col)}) не совпадают")
+        raise ValueError(f"❌ Shape X ({len(df)}) and y ({len(target_col)}) not same ")
 
     if method == "base":
         stratify_vals = target_col if params.get("stratify", False) else None
@@ -65,7 +64,7 @@ def split_data(target_col: pd.Series,
     elif method == "custom":
         id_col = custom_col if custom_col is not None else params.get("id_column", "global_id_ogrn")
         if id_col not in df.columns:
-            raise ValueError(f"❌ Колонка '{id_col}' не найдена в X")
+            raise ValueError(f"❌ Column '{id_col}' was not found in  X")
 
         unique_ids = df[id_col].unique()
         train_ids, test_ids = train_test_split(
@@ -82,7 +81,7 @@ def split_data(target_col: pd.Series,
         y_train, y_test = target_col.loc[train_mask], target_col.loc[test_mask]
 
     else:
-        raise ValueError(f"❌ Тип сплита '{method}' не поддерживается")
+        raise ValueError(f"❌ Type split '{method}' is not supported")
 
     print(f"✅ Split done: {method}")
     print(f"Train size: {len(X_train)}, Test size: {len(X_test)}")

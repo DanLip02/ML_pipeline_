@@ -12,8 +12,10 @@ if __name__ == "__main__":
 
     full_data_cfg = run_cfg.get("full_data", None)
     model_cfg = run_cfg.get("model", None)
+    metrics = run_cfg.get("metrics", None)
+    type_class_model = run_cfg.get("type_class_model", None)
 
     if full_data_cfg is not None and model_cfg is not None:
-        train_ensemble_model(type_data=TYPE_DATA, type_class=TYPE_CLASS, split_type=SPLIT_TYPE, data=full_data_cfg, model=model_cfg)
+        train_ensemble_model(type_data=TYPE_DATA, type_class=TYPE_CLASS, split_type=SPLIT_TYPE, data=full_data_cfg, model=model_cfg, metrics=metrics, type_class_model=type_class_model)
     else:
         train_ensemble_model(type_data=TYPE_DATA, type_class=TYPE_CLASS, split_type=SPLIT_TYPE)
