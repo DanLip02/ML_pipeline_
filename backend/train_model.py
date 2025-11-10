@@ -26,7 +26,7 @@ from metrics import load_metric
 # log_dir = os.path.join(os.path.dirname(__file__), "logs")
 # os.makedirs(log_dir, exist_ok=True)
 #
-# # Настройка логирования
+# # Logging settings
 # logging.basicConfig(
 #     filename=os.path.join(log_dir, "train_ensemble.log"),
 #     level=logging.INFO,
@@ -87,14 +87,16 @@ def train_ensemble_model(type_data: str,
                          model: dict=None,
                          metrics: dict=None,
                          type_class_model: str=None):
+
     cfg_path = f"models/model_config_{type_class}.yaml"
     try:
-        with open(cfg_path) as f:
-            cfg = yaml.safe_load(f)
 
         if model:
             logging.info("Getting model from user config.")
             cfg = model
+        else:
+            with open(cfg_path) as f:
+                cfg = yaml.safe_load(f)
 
         X, y, num_features, cat_features = apply_data(type_data=type_data, data=data) if data is not None else apply_data(type_data=type_data)
         csg_split = load_config.load_split_config(split_type=split_type)
@@ -201,7 +203,7 @@ def train_ensemble_model(type_data: str,
         logged_model = mlflow.get_logged_model(model_info.model_id)
         print(logged_model.model_id, logged_model.metrics)
 
-        # return logged_model
+        return logged_model.model_id
 
     except Exception as e:
         logging.exception(f"Error: {e}")

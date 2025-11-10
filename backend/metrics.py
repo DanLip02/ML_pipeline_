@@ -16,6 +16,7 @@ def compute_ar_metric(y_true, y_pred, skip=None,
                       min_benchmark=1, max_benchmark=7,
                       min_score=1, max_score=7):
 
+    URL_ar = os.getenv("URL_ar")
     payload = {
         "score": list(map(int, y_pred)),
         "ground_truth": list(map(int, y_true)),
@@ -28,7 +29,7 @@ def compute_ar_metric(y_true, y_pred, skip=None,
     }
 
     response = requests.post(
-        "",
+        URL_ar,
         headers={"accept": "application/json", "Content-Type": "application/json"},
         data=json.dumps(payload),
         verify=False #todo add cert for this https
@@ -65,12 +66,12 @@ def calc_base_metrics(metrics_list, y_test, y_pred, y_prob=None):
 
 def calc_custom_metrics(metrics_list, y_test, y_pred, y_prob=None):
     """
-    Вычисление кастомных метрик по названию.
+    Calculating cusom metric by name
 
-    metrics_list: dict, ключи — названия метрик, значения — словари параметров для конкретной метрики
-    y_test: истинные значения
-    y_pred: предсказанные значения
-    y_prob: вероятности предсказаний (если нужны)
+    metrics_list: dict, keys - name of metrics, value — dict of params for each custom metric
+    y_test: true values
+    y_pred: forecasted values
+    y_prob: prob of values (optional)
     """
     results = {}
 

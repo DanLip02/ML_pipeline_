@@ -1,0 +1,2 @@
+docker build . -t {localhost}/{image_name}:{varsion} #name_tag
+docker push "{localhost}/{image_name}:{varsion}"

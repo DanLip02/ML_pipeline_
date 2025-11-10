@@ -1,16 +1,16 @@
 run:
   type_data: test
   type_class: base
-  split_type: base
+  split_type: base #todo adapt to train
   type_class_model: classification
 
 full_data:
   data:
-    path: ""     # путь к Excel-файлу
-    sheet_name: "Ratings"                 # лист (если None — берётся первый)
-    target: "target"             # целевая переменная (если есть)
+    path:      # path to xlsx
+    sheet_name: "sheet_name"                 # sheet_name
+    target: "target"             # target
     skiprows: 7
-    dropna: False                       # удалить строки с пропусками
+    dropna: False                       # drop rows with NaN
     skip: "skip"
     date_column: "report_date"
     filter_columns:
@@ -83,7 +83,6 @@ metrics:
             min_benchmark: 1
             max_benchmark: 7
 
-          psi:
     base:
       - auc
       - f1

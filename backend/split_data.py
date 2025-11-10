@@ -10,26 +10,26 @@ def split_data(target_col: pd.Series,
                method: str,
                custom_col: str = None):
     """
-    Универсальная функция разбиения данных на X_train, X_test, y_train, y_test
-    в зависимости от типа сплита, описанного в конфиге.
+    Function to split data into X_train, X_test, y_train, y_test
+    based on type of split from yaml config.
 
     Args:
-        target_col (pd.Series): целевой вектор y
-        df (pd.DataFrame): матрица признаков X
-        cfg_split (dict): конфиг со структурой {'type': ..., 'params': {...}}
-        method (str): тип сплита ('base', 'time', 'kfold', 'custom')
-        custom_col (str, optional): колонка для кастомного сплита (например, id)
+        target_col (pd.Series): target y
+        df (pd.DataFrame): matrices of featured X
+        cfg_split (dict): config with structure {'type': ..., 'params': {...}}
+        method (str): type split ('base', 'time', 'kfold', 'custom')
+        custom_col (str, optional): custom split additional column (ex, id)
 
     Returns:
         X_train, X_test, y_train, y_test
     """
     params = cfg_split.get("params", {})
 
-    # Проверки
+    # checks
     # if not isinstance(df, pd.DataFrame):
-    #     raise TypeError("❌ Аргумент df должен быть pandas.DataFrame")
+    #     raise TypeError("❌ ARG df must be pandas.DataFrame")
     # if not isinstance(target_col, (pd.Series, pd.DataFrame)):
-    #     raise TypeError("❌ Аргумент target_col должен быть pandas.Series или DataFrame")
+    #     raise TypeError("❌ ARG target_col must be pandas.Series or DataFrame")
     if len(df) != len(target_col):
         raise ValueError(f"❌ Shape X ({len(df)}) and y ({len(target_col)}) not same ")
 
