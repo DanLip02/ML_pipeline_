@@ -10,4 +10,6 @@ seaborn==0.13.2
 mlflow-skinny==3.5.0
 mlflow-tracing==3.5.0
 openpyxl==3.1.5
+streamlit==1.51.0
 protobuf<4.23
+psycopg2-binary

@@ -25,19 +25,18 @@ def load_data(cfg: dict):
 
 def clean_target(df: pd.DataFrame, target_col: str, maps_num: dict) -> pd.DataFrame:
     if target_col not in df.columns:
-        raise ValueError(f"Целевая переменная '{target_col}' не найдена")
+        raise ValueError(f"target  '{target_col}' was not found ")
 
     before = len(df)
     df = df.dropna(subset=[target_col])
     if len(df) < before:
-        print(f"⚠️ Удалено {before - len(df)} строк с NaN в '{target_col}'")
+        print(f"⚠️ Deleted {before - len(df)} rows with NaN in target '{target_col}'")
 
     df[target_col] = df[target_col].astype(str).str.strip().str.lower()
     df["target_num"] = df[target_col].map(maps_num) if target_col in df.columns and maps_num is not None else df[target_col]
-    # df["target_num"] = df[target_col]
     unknown_mask = df["target_num"].isna()
     if unknown_mask.any():
-        print(f"⚠️ Неизвестные рейтинги: {df.loc[unknown_mask, target_col].unique()}")
+        print(f"⚠️ Unknown classes: {df.loc[unknown_mask, target_col].unique()}")
         df = df.loc[~unknown_mask]
 
     return df
@@ -89,10 +88,12 @@ def prepare_features(df: pd.DataFrame, cfg: dict):
 
 
 def apply_data(type_data: str, data: dict=None):
-    cfg_data = load_config(f"data_yaml/data_{type_data}.yaml")
 
     if data:
         cfg_data = data
+    else:
+        cfg_data = load_config(f"data_yaml/data_{type_data}.yaml")
+
     # cfg_split = load_config("configs/train_split.yaml")
 
     df = load_data(cfg_data)
