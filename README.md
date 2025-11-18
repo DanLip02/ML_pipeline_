@@ -179,3 +179,34 @@ metrics:
       - rmse
       - r2
 ```
+
+### 5. Example Configuration File (.env in root of directory) for Startup
+<details> <summary>📁 Click to view .env configuration</summary>
+
+```
+EXT_PORT_WEB=8301
+INT_PORT_WEB=8300
+EXT_PORT_FLOW=5101
+INT_PORT_FLOW=5100
+host_server=0.0.0.0
+
+user_name=user
+user_pass=pass
+host=localhost
+port=5432
+data_base=database
+schema=mlflow_pipeline
+
+```
+
+### 6. Example Configuration File (backend/.env in root of directory) for Startup
+<details> <summary>📁 Click to view backend/.env configuration</summary>
+
+```
+user_name=user
+user_pass=pass
+host=localhost
+port=5432
+data_base=database
+schema=mlflow_pipeline
+```

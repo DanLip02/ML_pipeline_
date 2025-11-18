@@ -104,6 +104,7 @@ def apply_data(type_data: str, data: dict=None):
 
     print(f"📊 Numerical features: {num_features}")
     print(f"🏷️ Categorical features: {cat_features}")
+
     if y is not None:
         print(f"🎯 Target: {cfg_data['data']['target']}")
 
