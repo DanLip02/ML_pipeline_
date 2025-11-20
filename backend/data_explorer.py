@@ -11,14 +11,48 @@ def load_config(cfg_path: str):
 
 
 def load_data(cfg: dict):
-    data_cfg = cfg["data"]
-    df = pd.read_excel(
-        data_cfg["path"],
-        sheet_name=data_cfg.get("sheet_name", None),
-        skiprows=data_cfg.get("skiprows", None)
-    )
+    import pyreadstat
+    """
+        load data based on  cfg["data"].
+        supported formats: Excel, CSV, TSV, SAV (SPSS), JSON, Parquet.
+        """
 
-    if data_cfg.get("dropna", False):
+    data_cfg = cfg["data"]
+    path = data_cfg["path"]
+
+    sheet_name = data_cfg.get("sheet_name", None)
+    skiprows = data_cfg.get("skiprows", None)
+    dropna_flag = data_cfg.get("dropna", False)
+
+    file_format = data_cfg.get("format", None)
+    if file_format is None:
+        file_format = path.split(".")[-1].lower()
+
+    if file_format in ("xlsx", "xls"):
+        df = pd.read_excel(path, sheet_name=sheet_name, skiprows=skiprows)
+
+    elif file_format == "csv":
+        df = pd.read_csv(path, skiprows=skiprows)
+
+    elif file_format == "tsv":
+        df = pd.read_csv(path, sep="\t", skiprows=skiprows)
+
+    elif file_format == "sav":
+        df, meta = pyreadstat.read_sav(path)
+
+    elif file_format == "sas7bdat":
+        df, meta = pyreadstat.read_sas7bdat(path)
+
+    elif file_format == "json":
+        df = pd.read_json(path)
+
+    elif file_format == "parquet":
+        df = pd.read_parquet(path)
+
+    else:
+        raise ValueError(f"file format '{file_format}' is not supported")
+
+    if dropna_flag:
         df = df.dropna()
 
     return df
@@ -104,7 +138,6 @@ def apply_data(type_data: str, data: dict=None):
 
     print(f"📊 Numerical features: {num_features}")
     print(f"🏷️ Categorical features: {cat_features}")
-
     if y is not None:
         print(f"🎯 Target: {cfg_data['data']['target']}")
 
